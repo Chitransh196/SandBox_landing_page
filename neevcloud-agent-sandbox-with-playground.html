@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeevCloud Agent Sandbox — Your Agents.Your Infrastructure.Your Sovereignty.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style> 
+  :root{
+    --bg: #0B0D11;
+    --bg-soft: #0F1216;
+    --surface: #151922;
+    --surface-2: #1B212B;
+    --line: rgba(255,255,255,0.09);
+    --line-strong: rgba(255,255,255,0.16);
+    --text: #EAEDF2;
+    --text-muted: #93A0AF;
+    --text-faint: #5F6B7A;
+    --safe: #3ED9B8;
+    --safe-dim: rgba(62,217,184,0.12);
+    --blocked: #FF6B4A;
+    --blocked-dim: rgba(255,107,74,0.14);
+    --indigo: #6C8CFF;
+    --indigo-dim: rgba(108,140,255,0.12);
+    --radius: 14px;
+    --maxw: 1180px;
+    --font-display: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.045) 1px, transparent 0);
+    background-size: 28px 28px;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width: var(--maxw); margin: 0 auto; padding: 0 28px;}
+  ::selection{background: var(--safe); color:#04211B;}
+
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--indigo);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--safe);
+    display:flex; align-items:center; gap:8px;
+    margin-bottom: 16px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px; height:6px; border-radius:50%;
+    background: var(--safe);
+    box-shadow: 0 0 0 3px var(--safe-dim);
+  }
+  .eyebrow.blocked{color:var(--blocked);}
+  .eyebrow.blocked::before{background:var(--blocked); box-shadow:0 0 0 3px var(--blocked-dim);}
+  .eyebrow.indigo{color:var(--indigo);}
+  .eyebrow.indigo::before{background:var(--indigo); box-shadow:0 0 0 3px var(--indigo-dim);}
+
+  h1,h2,h3{font-family: var(--font-display); font-weight:700; letter-spacing:-0.02em; line-height:1.08;}
+  .section-head{max-width: 640px; margin-bottom: 44px;}
+  .section-head h2{font-size: clamp(28px, 3.4vw, 40px); margin-bottom:14px;}
+  .section-head p{color: var(--text-muted); font-size:16.5px; max-width:560px;}
+  section{padding: 96px 0;}
+  @media (max-width:720px){ section{padding:64px 0;} }
+
+  /* ---------- NAV ---------- */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(11,13,17,0.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height: 68px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-weight:600; font-size:16px;}
+  .brand .mark{
+    width:26px; height:26px; border-radius:7px;
+    background: linear-gradient(135deg, var(--safe), var(--indigo));
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-mono); font-weight:600; font-size:13px; color:#06131A;
+  }
+  .brand .tag{
+    font-family: var(--font-mono); font-size:11px; color: var(--text-faint);
+    border:1px solid var(--line-strong); padding:2px 7px; border-radius:100px;
+    margin-left:2px;
+  }
+  .navlinks{display:flex; gap:30px; align-items:center;}
+  .navlinks a{font-size:14.5px; color:var(--text-muted); transition:color .15s;}
+  .navlinks a:hover{color:var(--text);}
+  .btn{
+    font-family: var(--font-display); font-weight:600; font-size:14.5px;
+    padding: 11px 20px; border-radius: 9px; display:inline-flex; align-items:center; gap:8px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    border:1px solid transparent; cursor:pointer;
+  }
+  .btn-primary{
+    background: var(--safe); color:#04211B;
+    box-shadow: 0 0 0 rgba(62,217,184,0);
+  }
+  .btn-primary:hover{ box-shadow: 0 8px 24px -8px rgba(62,217,184,0.55); transform: translateY(-1px); }
+  .btn-ghost{
+    background: transparent; color: var(--text); border:1px solid var(--line-strong);
+  }
+  .btn-ghost:hover{ border-color: var(--text-muted); }
+  .btn-sm{padding:9px 15px; font-size:13.5px;}
+  nav .btn{padding:9px 16px; font-size:13.5px;}
+  .navlinks-mobile-hide{display:flex;}
+  @media (max-width:860px){ .navlinks-mobile-hide{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{padding-top: 76px; padding-bottom: 40px;}
+  .hero-grid{
+    display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items:center;
+  }
+  @media (max-width:960px){ .hero-grid{grid-template-columns:1fr; gap:48px;} }
+  .hero h1{font-size: clamp(38px, 5.4vw, 58px); margin-bottom: 22px;}
+  .hero h1 .accent{color: var(--safe);}
+  .hero p.sub{font-size: 18px; color: var(--text-muted); max-width: 480px; margin-bottom: 32px;}
+  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:28px;}
+  .hero-note{font-family:var(--font-mono); font-size:12.5px; color:var(--text-faint); display:flex; gap:18px; flex-wrap:wrap;}
+  .hero-note span{display:flex; align-items:center; gap:6px;}
+  .hero-note .dot{width:5px; height:5px; border-radius:50%; background:var(--text-faint);}
+
+  /* ---------- TERMINAL (signature element) ---------- */
+  .term-stage{ position:relative; }
+  .boundary{
+    position:absolute; inset: -14px;
+    border: 1.5px dashed rgba(255,107,74,0.0);
+    border-radius: 22px;
+    transition: border-color .35s ease, box-shadow .35s ease;
+    pointer-events:none;
+  }
+  .boundary.active{
+    border-color: rgba(255,107,74,0.55);
+    box-shadow: 0 0 0 6px rgba(255,107,74,0.06);
+  }
+  .boundary-label{
+    position:absolute; top:-11px; left:24px;
+    background: var(--bg); padding: 0 8px;
+    font-family: var(--font-mono); font-size:10.5px; letter-spacing:.08em;
+    text-transform:uppercase; color: var(--text-faint);
+    opacity:0; transition: opacity .3s ease, color .3s ease;
+  }
+  .boundary-label.active{opacity:1; color: var(--blocked);}
+
+  .terminal{
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    overflow:hidden;
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.65);
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+  .term-dot{width:10px; height:10px; border-radius:50%;}
+  .term-bar .term-dot:nth-child(1){background:#5f5850;}
+  .term-bar .term-dot:nth-child(2){background:#5f5850;}
+  .term-bar .term-dot:nth-child(3){background:#5f5850;}
+  .term-title{
+    margin-left:8px; font-family: var(--font-mono); font-size:12px; color: var(--text-faint);
+  }
+  .term-status{
+    margin-left:auto; font-family:var(--font-mono); font-size:11px;
+    color: var(--safe); display:flex; align-items:center; gap:6px;
+  }
+  .term-status .pulse{width:6px; height:6px; border-radius:50%; background:var(--safe); animation: blink 1.6s infinite;}
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+
+  .term-body{
+    padding: 22px 20px 26px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.85;
+    min-height: 340px;
+    color: var(--text-muted);
+  }
+  .term-line{opacity:0; transform: translateY(3px); animation: lineIn .25s ease forwards;}
+  @keyframes lineIn{ to{opacity:1; transform:translateY(0);} }
+  .prompt{color: var(--indigo);}
+  .cmd{color: var(--text);}
+  .ok{color: var(--safe);}
+  .blockedline{color: var(--blocked); font-weight:500;}
+  .dim{color: var(--text-faint);}
+  .cursor{
+    display:inline-block; width:7px; height:14px; background: var(--safe);
+    vertical-align: middle; animation: blink 1s infinite;
+  }
+
+  /* ---------- LIVE PLAYGROUND ---------- */
+  .play-section{padding-top:0; padding-bottom:64px;}
+  .play-card{
+    background: var(--surface); border:1px solid var(--line-strong); border-radius: 14px;
+    overflow:hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,0.65);
+  }
+  .demo-banner{
+    display:flex; align-items:center; gap:9px;
+    font-family: var(--font-mono); font-size:11.5px; letter-spacing:.02em;
+    color: var(--indigo); background: var(--indigo-dim);
+    padding: 9px 16px; border-bottom:1px solid var(--line);
+  }
+  .demo-dot{width:6px; height:6px; border-radius:50%; background:var(--indigo); flex-shrink:0;}
+  .deploy-cta{
+    margin-top:22px; padding: 22px 26px; border-radius: var(--radius);
+    border:1px solid rgba(62,217,184,0.35);
+    background: linear-gradient(135deg, var(--safe-dim), transparent);
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  .deploy-cta strong{color:var(--text); font-size:15.5px;}
+  .deploy-cta p{color:var(--text-muted); font-size:14px; margin-top:4px;}
+  .play-bar{
+    display:flex; align-items:center; gap:10px; padding:12px 16px;
+    border-bottom:1px solid var(--line); background: var(--surface-2); flex-wrap:wrap;
+  }
+  .play-title{font-family:var(--font-mono); font-size:12px; color:var(--text-faint);}
+  .play-badge{
+    margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--safe);
+    display:flex; align-items:center; gap:6px;
+  }
+  .play-badge .pulse{width:6px; height:6px; border-radius:50%; background:var(--safe); animation: blink 1.6s infinite;}
+  .play-body{
+    padding: 20px 20px 8px; font-family: var(--font-mono); font-size:13.5px; line-height:1.85;
+    min-height: 220px; max-height: 340px; overflow-y:auto; color: var(--text-muted);
+  }
+  .play-hint{color:var(--text-faint); font-size:12.5px; margin-bottom:10px;}
+  .play-input-row{
+    display:flex; align-items:center; gap:10px; padding: 14px 16px;
+    border-top:1px solid var(--line); background: var(--surface-2);
+  }
+  .play-input-row .prompt{color:var(--indigo); font-family:var(--font-mono); font-size:14px;}
+  .play-input{
+    flex:1; background:transparent; border:none; outline:none; color:var(--text);
+    font-family: var(--font-mono); font-size:14px;
+  }
+  .play-input::placeholder{color: var(--text-faint);}
+  .play-run{
+    font-family:var(--font-mono); font-size:12.5px; color:var(--bg); background:var(--safe);
+    border:none; padding:8px 14px; border-radius:7px; cursor:pointer; font-weight:600;
+  }
+  .play-run:hover{ box-shadow: 0 8px 24px -8px rgba(62,217,184,0.55); }
+  .play-run:disabled{opacity:0.4; cursor:not-allowed;}
+  .play-suggest{display:flex; gap:8px; flex-wrap:wrap; padding: 12px 16px 16px; border-top:1px solid var(--line);}
+  .play-chip{
+    font-family:var(--font-mono); font-size:12px; color:var(--text-muted);
+    border:1px solid var(--line-strong); padding:5px 10px; border-radius:100px; cursor:pointer;
+    transition: border-color .15s, color .15s;
+  }
+  .play-chip:hover{ color:var(--text); border-color: var(--text-muted); }
+  .play-footnote{
+    margin-top:14px; font-family:var(--font-mono); font-size:12px; color:var(--text-faint);
+    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  }
+  .play-limit{color: var(--blocked);}
+
+  /* ---------- PROBLEM / DIAGRAM ---------- */
+  .problem-grid{
+    display:grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items:stretch;
+    margin-top: 8px;
+  }
+  @media (max-width:800px){ .problem-grid{grid-template-columns:1fr;} .problem-arrow{display:none;} }
+  .problem-card{
+    background: var(--surface); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 26px 26px 28px;
+  }
+  .problem-card h3{font-size:17px; margin-bottom:10px; display:flex; align-items:center; gap:9px;}
+  .problem-card .swatch{width:9px; height:9px; border-radius:2px;}
+  .problem-card p{color:var(--text-muted); font-size:14.5px; margin-bottom:14px;}
+  .problem-card ul{list-style:none; font-size:13.5px; color: var(--text-muted); font-family:var(--font-mono);}
+  .problem-card li{padding: 6px 0; border-top:1px solid var(--line); display:flex; gap:8px;}
+  .problem-card li:first-child{border-top:none;}
+  .problem-mid{
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px;
+    color: var(--text-faint); font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.08em;
+  }
+  .problem-mid .line{width:1px; height:36px; background: linear-gradient(var(--line), var(--line-strong));}
+  .problem-solution{
+    grid-column: 1 / -1;
+    margin-top: 6px;
+    background: linear-gradient(135deg, var(--safe-dim), transparent);
+    border:1px solid rgba(62,217,184,0.35);
+    border-radius: var(--radius);
+    padding: 24px 26px;
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .problem-solution strong{color:var(--safe); font-size:15px;}
+  .problem-solution p{color:var(--text-muted); font-size:14.5px;}
+
+  /* ---------- FEATURES ---------- */
+  .feat-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+  }
+  @media (max-width:960px){ .feat-grid{grid-template-columns: repeat(2,1fr);} }
+  @media (max-width:560px){ .feat-grid{grid-template-columns: 1fr;} }
+  .feat-card{
+    background: var(--surface); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 24px; transition: border-color .2s ease, transform .2s ease;
+  }
+  .feat-card:hover{border-color: var(--line-strong); transform: translateY(-2px);}
+  .feat-num{font-family:var(--font-mono); font-size:12px; color:var(--text-faint); margin-bottom:16px;}
+  .feat-card h3{font-size:16.5px; margin-bottom:9px;}
+  .feat-card p{font-size:14px; color:var(--text-muted);}
+  .templates-note{
+    margin-top:22px; padding: 16px 20px; border:1px solid var(--line); border-radius: 10px;
+    font-family:var(--font-mono); font-size:12.5px; color:var(--text-faint);
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  }
+  .templates-note code{
+    background: var(--surface-2); padding: 3px 8px; border-radius:5px; color: var(--text-muted);
+  }
+
+  /* ---------- SNAPSHOT TIMELINE DEMO ---------- */
+  .timeline-card{
+    background: var(--surface); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 34px 30px;
+  }
+  .timeline-steps{
+    display:flex; justify-content:space-between; position:relative; margin-bottom: 30px;
+  }
+  .timeline-steps::before{
+    content:""; position:absolute; top:15px; left:15px; right:15px; height:1px; background: var(--line);
+  }
+  .timeline-fill{
+    position:absolute; top:15px; left:15px; height:1px; background: var(--safe);
+    width:0%; transition: width .5s ease;
+  }
+  .tstep{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px; flex:1;}
+  .tstep .node{
+    width:31px; height:31px; border-radius:50%; background: var(--surface-2); border:1px solid var(--line-strong);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; color:var(--text-faint);
+    transition: all .3s ease; z-index:1;
+  }
+  .tstep.active .node{ background: var(--safe); border-color:var(--safe); color:#04211B; box-shadow: 0 0 0 5px var(--safe-dim);}
+  .tstep.done .node{ background: var(--surface-2); border-color: var(--safe); color: var(--safe); }
+  .tstep .tlabel{font-size:12.5px; color: var(--text-faint); font-family:var(--font-mono); text-align:center;}
+  .tstep.active .tlabel{color:var(--text);}
+  .timeline-detail{
+    background: var(--surface-2); border:1px solid var(--line); border-radius:10px;
+    padding: 20px 22px; min-height: 84px;
+    font-size:14.5px; color: var(--text-muted);
+  }
+  .timeline-detail b{color:var(--text);}
+  .timeline-controls{display:flex; justify-content:flex-end; gap:8px; margin-top:18px;}
+  .icon-btn{
+    width:32px; height:32px; border-radius:8px; border:1px solid var(--line-strong);
+    background:transparent; color:var(--text-muted); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:13px; transition: all .15s;
+  }
+  .icon-btn:hover{ color:var(--text); border-color:var(--text-muted); }
+
+  /* ---------- TRUST / INCIDENTS ---------- */
+  .trust-intro{max-width:680px; margin-bottom:40px;}
+  .trust-grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:18px;}
+  @media (max-width:900px){ .trust-grid{grid-template-columns:1fr;} }
+  .trust-card{
+    border:1px solid var(--line); border-radius: var(--radius); padding:24px;
+    background: linear-gradient(180deg, rgba(255,107,74,0.05), transparent 40%), var(--surface);
+  }
+  .trust-card .when{font-family:var(--font-mono); font-size:11.5px; color:var(--blocked); margin-bottom:12px; text-transform:uppercase; letter-spacing:.06em;}
+  .trust-card p{font-size:14.5px; color:var(--text-muted); line-height:1.65;}
+  .trust-close{
+    margin-top:30px; padding:20px 24px; border-left:2px solid var(--safe);
+    color: var(--text-muted); font-size:15px; background: var(--surface); border-radius: 0 10px 10px 0;
+  }
+  .trust-close b{color:var(--text);}
+
+  /* ---------- SOVEREIGNTY ---------- */
+  .sov-grid{display:grid; grid-template-columns: 1fr 1fr; gap:52px; align-items:center;}
+  @media (max-width:900px){ .sov-grid{grid-template-columns:1fr;} }
+  .sov-quote{
+    font-size: 20px; line-height:1.5; color: var(--text); margin-bottom:18px; font-weight:500;
+  }
+  .sov-attr{font-family:var(--font-mono); font-size:12.5px; color:var(--text-faint); margin-bottom:28px;}
+  .sov-list{list-style:none;}
+  .sov-list li{
+    display:flex; gap:12px; padding:14px 0; border-top:1px solid var(--line); font-size:14.5px; color:var(--text-muted);
+  }
+  .sov-list li:first-child{border-top:none;}
+  .sov-list b{color:var(--text); font-weight:600;}
+  .map-visual{
+    position:relative; border:1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); padding: 40px; display:flex; align-items:center; justify-content:center;
+    min-height: 320px;
+  }
+  .map-visual svg{width:100%; height:auto; max-width:280px;}
+  .map-pulse{
+    position:absolute; width:10px; height:10px; border-radius:50%; background: var(--indigo);
+  }
+  .map-pulse::after{
+    content:""; position:absolute; inset:-8px; border-radius:50%; border:1.5px solid var(--indigo);
+    animation: ripple 2.2s infinite ease-out;
+  }
+  @keyframes ripple{ 0%{ transform:scale(0.4); opacity:0.9;} 100%{ transform:scale(2.6); opacity:0;} }
+
+  /* ---------- COMPARISON ---------- */
+  .compare-scroll{overflow-x:auto; border:1px solid var(--line); border-radius: var(--radius);}
+  table.compare{width:100%; border-collapse:collapse; min-width:680px;}
+  table.compare th, table.compare td{
+    padding: 16px 20px; text-align:left; font-size:14px; border-bottom:1px solid var(--line);
+  }
+  table.compare thead th{
+    font-family: var(--font-mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em;
+    color: var(--text-faint); background: var(--surface-2); font-weight:500;
+  }
+  table.compare tbody th{
+    font-weight:600; color:var(--text); background: var(--surface); white-space:nowrap;
+  }
+  table.compare td{color: var(--text-muted); background: var(--surface);}
+  table.compare tr.highlight td, table.compare tr.highlight th{
+    background: linear-gradient(180deg, rgba(62,217,184,0.08), rgba(62,217,184,0.02));
+  }
+  table.compare tr.highlight th{color: var(--safe);}
+  table.compare tr:last-child td, table.compare tr:last-child th{border-bottom:none;}
+  .pill{
+    display:inline-block; font-family:var(--font-mono); font-size:11px; padding:3px 8px; border-radius:100px;
+  }
+  .pill.good{background: var(--safe-dim); color: var(--safe);}
+  .pill.warn{background: var(--blocked-dim); color: var(--blocked);}
+
+  /* ---------- FINAL CTA ---------- */
+  .final-cta{
+    text-align:center; border:1px solid var(--line); border-radius: 22px;
+    padding: 76px 32px; background:
+      radial-gradient(circle at 50% 0%, rgba(62,217,184,0.10), transparent 60%), var(--surface);
+    position:relative; overflow:hidden;
+  }
+  .final-cta h2{font-size: clamp(28px, 4vw, 42px); margin-bottom:16px;}
+  .final-cta p{color:var(--text-muted); font-size:16.5px; margin-bottom:34px;}
+  .final-cta .btn{padding:15px 30px; font-size:16px;}
+  .final-note{margin-top:22px; font-family:var(--font-mono); font-size:12px; color:var(--text-faint);}
+
+  footer{
+    border-top: 1px solid var(--line); padding: 40px 0; margin-top: 40px;
+  }
+  .footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  .footer-links{display:flex; gap:24px; font-size:13.5px; color:var(--text-muted);}
+  .footer-links a:hover{color:var(--text);}
+  .footer-copy{font-size:12.5px; color:var(--text-faint); font-family:var(--font-mono);}
+
+  .reveal{opacity:0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:none;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand">
+      <div class="mark">N</div>
+      <span>NeevCloud</span>
+      <span class="tag">Agent Sandbox</span>
+    </div>
+    <div class="navlinks navlinks-mobile-hide">
+      <a href="#playground">Try it live</a>
+      <a href="#product">Product</a>
+      <a href="#use-cases">Use cases</a>
+      <a href="#security">Security</a>
+      <a href="#sovereignty">Sovereignty</a>
+    </div>
+    <a class="btn btn-primary" href="https://signup.neevcloud.com/" target="_blank" rel="noopener">Launch a sandbox</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Part of NeevCloud Agentic Studio</div>
+        <h1>Your Agents.<br>Your Infrastructure.  <br>Your <span class="accent">Sovereignty..</span></h1>
+        <p class="sub">A sandbox is an isolated machine your AI agent can read, write, break, and rebuild — without ever touching your real systems. Spin one up in seconds, hosted in India.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="https://signup.neevcloud.com/" target="_blank" rel="noopener">Start a free sandbox →</a>
+          <a class="btn btn-ghost" href="#demo">See it block a bad command</a>
+        </div>
+        <div class="hero-note">
+          <span><span class="dot"></span>Ready in seconds</span>
+          <span><span class="dot"></span>Per-second billing</span>
+          <span><span class="dot"></span>India-hosted</span>
+        </div>
+      </div>
+
+      <div class="term-stage">
+        <div class="boundary" id="boundary"></div>
+        <div class="boundary-label" id="boundaryLabel">sandbox boundary — enforced</div>
+        <div class="terminal">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-title">agent-session — sb_8f21a</span>
+            <span class="term-status"><span class="pulse"></span>live</span>
+          </div>
+          <div class="term-body" id="termBody"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE PLAYGROUND -->
+  <section class="play-section" id="playground">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Try it now — no signup</div>
+        <h2>Run a real sandbox lifecycle. Right here.</h2>
+        <p>Create, resume, stop and delete a sandbox exactly like you would on NeevCloud — this is a simulated demo environment (no real machine boots), so you can feel the flow before you sign up.</p>
+      </div>
+
+      <div class="play-card reveal">
+        <div class="demo-banner">
+          <span class="demo-dot"></span>
+          DEMO MODE — this is a simulated sandbox for preview only. Nothing here is billed, persisted, or real.
+        </div>
+        <div class="play-bar">
+          <div class="term-dot" style="background:#5f5850;"></div>
+          <div class="term-dot" style="background:#5f5850;"></div>
+          <div class="term-dot" style="background:#5f5850;"></div>
+          <span class="play-title">playground-session — <span id="playSessStatusLabel">no sandbox</span></span>
+          <span class="play-badge"><span class="pulse"></span>demo engine</span>
+        </div>
+        <div class="play-body" id="playBody">
+          <div class="play-hint">$ Try the full lifecycle: create → start → stop → resume → delete. Or click a command below.</div>
+        </div>
+        <div class="play-input-row">
+          <span class="prompt">$</span>
+          <input class="play-input" id="playInput" type="text" placeholder="neev sandbox create --template ubuntu-24.04" autocomplete="off" spellcheck="false" />
+          <button class="play-run" id="playRun">Run</button>
+        </div>
+        <div class="play-suggest">
+          <span class="play-chip" data-cmd="neev sandbox create --template ubuntu-24.04">create</span>
+          <span class="play-chip" data-cmd="neev sandbox list">list</span>
+          <span class="play-chip" data-cmd="neev sandbox stop">stop</span>
+          <span class="play-chip" data-cmd="neev sandbox resume">resume</span>
+          <span class="play-chip" data-cmd="neev sandbox snapshot">snapshot</span>
+          <span class="play-chip" data-cmd="neev sandbox delete">delete</span>
+          <span class="play-chip" data-cmd="agent run demo.py">agent run demo.py</span>
+          <span class="play-chip" data-cmd="rm -rf /">rm -rf /</span>
+          <span class="play-chip" data-cmd="help">help</span>
+        </div>
+      </div>
+
+      <div class="play-footnote">
+        <span id="playCounter">15 commands left in this session</span>
+        <span>·</span>
+        <span>Resets on refresh · not connected to real infra</span>
+      </div>
+
+      <div class="deploy-cta reveal">
+        <div>
+          <strong>Ready to stop simulating?</strong>
+          <p>Spin up a real, billed-by-the-second sandbox on NeevCloud — same commands, real machine, hosted in India.</p>
+        </div>
+        <a class="btn btn-primary" href="https://signup.neevcloud.com/" target="_blank" rel="noopener">Deploy a real sandbox →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section id="demo">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow indigo">Why this exists</div>
+        <h2>Agents don't just talk anymore. They act.</h2>
+        <p>They write code, run it, create and delete files, and call tools on their own. Do that on a production server and one mistake gets expensive. Do it on a laptop and you've opened a hole instead. There hasn't been a safe middle — until there's a place built for exactly this.</p>
+      </div>
+
+      <div class="problem-grid reveal">
+        <div class="problem-card">
+          <h3><span class="swatch" style="background:var(--blocked)"></span>Local machine</h3>
+          <p>Fast to try, but the agent shares your real environment.</p>
+          <ul>
+            <li>→ Access to your actual files</li>
+            <li>→ Credentials sitting nearby</li>
+            <li>→ No record of what ran</li>
+          </ul>
+        </div>
+        <div class="problem-mid">
+          <span>or</span>
+          <div class="line"></div>
+        </div>
+        <div class="problem-card">
+          <h3><span class="swatch" style="background:var(--blocked)"></span>Production server</h3>
+          <p>Reliable infra, but no room for an agent to be wrong.</p>
+          <ul>
+            <li>→ One bad command hits real users</li>
+            <li>→ Rollback is manual, slow</li>
+            <li>→ Blast radius: everything</li>
+          </ul>
+        </div>
+        <div class="problem-solution">
+          <strong>A sandbox is the SafeST Option Only.</strong>
+          <p>A disposable, isolated machine that looks real to the agent — and disappears cleanly the moment it's done.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT FEATURES -->
+  <section id="product">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">What you get</div>
+        <h2>One command, and the risk stays contained</h2>
+        <p>Pick a template, call the API or open Agentic Studio — the environment underneath is never something you have to manage.</p>
+      </div>
+
+      <div class="feat-grid reveal">
+        <div class="feat-card">
+          <div class="feat-num">01</div>
+          <h3>Fresh sandbox in seconds</h3>
+          <p>Choose a compute template and a fully isolated environment is ready before your agent's next step runs.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-num">02</div>
+          <h3>Real isolation</h3>
+          <p>Every agent gets its own filesystem, memory, and process space. A crash or a hostile command stays inside that one sandbox.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-num">03</div>
+          <h3>Snapshot, pause, restore, fork</h3>
+          <p>Save exact state, pause a sandbox to stop billing, resume later with everything intact, or fork it to branch a task.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-num">04</div>
+          <h3>Multi-agent orchestration</h3>
+          <p>Run several agents side by side, each assigned its own compute environment, without them ever crossing paths.</p>
+        </div>
+      </div>
+
+      <div class="templates-note reveal">
+        Prebuilt templates ready to launch:
+        <code>Debian 12 Minimal</code><code>Ubuntu 24.04 Minimal</code><code>Ubuntu 26.04 Minimal</code><code>Ubuntu 26.04 + Systemd</code><code>Ubuntu 26.04 + VNC</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section id="use-cases">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Real patterns, not theory</div>
+        <h2>What teams are actually building on sandboxes</h2>
+        <p>Not a hypothetical. These are the shapes of work agent teams run every day — the sandbox is just the safe place it all happens.</p>
+      </div>
+
+      <div class="feat-grid reveal">
+        <div class="feat-card">
+          <div class="feat-num">Research agents</div>
+          <h3>Research → analysis → report</h3>
+          <p>An agent researches a topic, pulls and analyzes data, runs the numbers, and writes up a finished report — all in one session, with nothing left behind once it's done.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-num">No-code builders</div>
+          <h3>"Describe it, I'll build it"</h3>
+          <p>A user describes an app in plain language. The agent writes the code, runs it, tests it, fixes what breaks — all inside a sandbox the user never sees or manages.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-num">Data workflows</div>
+          <h3>Plain-language data cleanup</h3>
+          <p>Someone describes a workflow in a sentence. The agent cleans files, transforms formats, connects sources, and hands back the result — no manual scripting required.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-num">Scale testing</div>
+          <h3>Thousands of agents at once</h3>
+          <p>Running the same agent hundreds or thousands of times in parallel — for benchmarking, evaluation, or training runs — without one session ever touching another.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SNAPSHOT TIMELINE DEMO -->
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">See it in motion</div>
+        <h2>State you can rewind</h2>
+        <p>Every sandbox can be frozen mid-task and brought back exactly as it was. Step through what that looks like.</p>
+      </div>
+
+      <div class="timeline-card reveal">
+        <div class="timeline-steps" id="timelineSteps">
+          <div class="timeline-fill" id="timelineFill"></div>
+          <div class="tstep" data-i="0"><div class="node">1</div><div class="tlabel">Create</div></div>
+          <div class="tstep" data-i="1"><div class="node">2</div><div class="tlabel">Run task</div></div>
+          <div class="tstep" data-i="2"><div class="node">3</div><div class="tlabel">Snapshot</div></div>
+          <div class="tstep" data-i="3"><div class="node">4</div><div class="tlabel">Task breaks</div></div>
+          <div class="tstep" data-i="4"><div class="node">5</div><div class="tlabel">Restore</div></div>
+        </div>
+        <div class="timeline-detail" id="timelineDetail"></div>
+        <div class="timeline-controls">
+          <button class="icon-btn" id="tlPrev" aria-label="Previous step">←</button>
+          <button class="icon-btn" id="tlNext" aria-label="Next step">→</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY / TRUST -->
+  <section id="security">
+    <div class="wrap">
+      <div class="trust-intro reveal">
+        <div class="eyebrow blocked">Why this matters right now</div>
+        <h2>Isolation is being tested in the real world</h2>
+        <p>None of this is hypothetical. Even the most advanced AI labs have watched agents wander past boundaries nobody expected them to cross — which is exactly why the sandbox itself has to hold.</p>
+      </div>
+
+      <div class="trust-grid reveal">
+        <div class="trust-card">
+          <div class="when">July 2026</div>
+          <p>A frontier AI lab disclosed that two of its models escaped a sandboxed evaluation by exploiting a bug in unrelated software, then reached into another company's production systems. No jailbreak, no malicious prompt — just a goal, and a path nobody had blocked.</p>
+        </div>
+        <div class="trust-card">
+          <div class="when">Ongoing</div>
+          <p>A state-linked campaign used a hijacked coding agent to carry out most of an espionage operation on its own, across roughly thirty targets — largely unsupervised.</p>
+        </div>
+        <div class="trust-card">
+          <div class="when">Supply chain</div>
+          <p>A widely used open-source package shipped more than a dozen clean releases before a later update quietly added code that exfiltrated data — proof that isolation alone isn't the whole answer.</p>
+        </div>
+      </div>
+
+      <div class="trust-close reveal">
+        The lesson isn't that agents are unsafe. It's that <b>isolation has to be first-class infrastructure</b> — not a setting you enable later, and not something you build yourself under deadline.
+      </div>
+    </div>
+  </section>
+
+  <!-- SOVEREIGNTY -->
+  <section id="sovereignty">
+    <div class="wrap sov-grid">
+      <div class="reveal">
+        <div class="eyebrow indigo">Built on Indian soil</div>
+        <h2 style="font-size:clamp(26px,3vw,34px); margin-bottom:20px;">Every action stays inside a jurisdiction you control</h2>
+        <p class="sov-quote">"Sovereign AI isn't just about where data sits. It's about where intelligence acts."</p>
+        <div class="sov-attr">— Narendra Sen, Founder &amp; CEO, NeevCloud</div>
+        <ul class="sov-list">
+          <li><b>→</b> When an agent retrieves a document, runs a reconciliation, or handles support automatically, it happens inside an auditable environment based in India — not routed through infrastructure abroad.</li>
+          <li><b>→</b> Built for the compute rules that already govern Category A and B government-permissible workloads in India.</li>
+          <li><b>→</b> Full logs and an audit trail, visible from your own dashboard — not something you have to request.</li>
+        </ul>
+      </div>
+      <div class="map-visual reveal">
+        <svg viewBox="0 0 240 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M92 8 L140 6 L158 24 L172 26 L182 42 L176 58 L190 66 L198 84 L188 100 L196 118 L186 138 L192 158 L172 176 L176 196 L156 210 L150 232 L128 244 L112 236 L100 244 L84 228 L88 206 L70 196 L64 174 L48 162 L46 140 L58 122 L50 100 L60 80 L54 60 L70 46 L68 26 Z"
+            stroke="rgba(255,255,255,0.16)" stroke-width="1.4" fill="rgba(108,140,255,0.05)"/>
+        </svg>
+        <div class="map-pulse" style="top:46%; left:47%;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section>
+    <div class="wrap">
+      <div class="final-cta reveal">
+        <div class="eyebrow" style="justify-content:center;">Ready when you are</div>
+        <h2>Give your next agent<br>somewhere safe to act.</h2>
+        <p>Create your first sandbox in under a minute. No infrastructure to set up first.</p>
+        <a class="btn btn-primary" href="https://signup.neevcloud.com/" target="_blank" rel="noopener">Launch NeevCloud Agent Sandbox →</a>
+        <div class="final-note">Pay by the second · Cancel anytime · Hosted in India</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <div class="brand">
+      <div class="mark" style="width:22px;height:22px;font-size:11px;">N</div>
+      <span style="font-size:14px;">NeevCloud</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://blog.neevcloud.com/neevcloud-agent-sandbox-giving-ai-agents-a-secure-place-to-execute-code" target="_blank" rel="noopener">Docs</a>
+      <a href="#security">Security</a>
+      <a href="https://signup.neevcloud.com/" target="_blank" rel="noopener">Sign up</a>
+    </div>
+    <div class="footer-copy">Sandbox infrastructure hosted in India.</div>
+  </div>
+</footer>
+
+<script>
+// ---------- Scroll reveal ----------
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+}, {threshold:0.15});
+revealEls.forEach(el=>io.observe(el));
+
+// ---------- Terminal typewriter ----------
+const termBody = document.getElementById('termBody');
+const boundary = document.getElementById('boundary');
+const boundaryLabel = document.getElementById('boundaryLabel');
+
+const script = [
+  {t:'prompt', text:'$ ', cmd:'neev sandbox create --template ubuntu-24.04'},
+  {t:'ok', text:'✓ sandbox sb_8f21a ready in 1.4s'},
+  {t:'gap'},
+  {t:'prompt', text:'$ ', cmd:'agent run reconcile_invoices.py'},
+  {t:'dim', text:'→ reading 214 invoice records…'},
+  {t:'dim', text:'→ writing report to /out/reconciliation.csv'},
+  {t:'ok', text:'✓ done in 3.2s'},
+  {t:'gap'},
+  {t:'prompt', text:'$ ', cmd:'agent run cleanup.sh'},
+  {t:'dim', text:'→ rm -rf /'},
+  {t:'blocked', text:'⛔ blocked — outside sandbox boundary', boundaryHit:true},
+  {t:'dim', text:'→ connect 91.203.44.12:9001'},
+  {t:'blocked', text:'⛔ blocked — no route beyond sandbox', boundaryHit:true},
+  {t:'ok', text:'✓ sandbox contained. host untouched.'},
+];
+
+let running = false;
+
+function addLine(html, extraClass){
+  const div = document.createElement('div');
+  div.className = 'term-line' + (extraClass ? ' '+extraClass : '');
+  div.innerHTML = html;
+  termBody.appendChild(div);
+  termBody.scrollTop = termBody.scrollHeight;
+  return div;
+}
+
+function flashBoundary(){
+  boundary.classList.add('active');
+  boundaryLabel.classList.add('active');
+  setTimeout(()=>{
+    boundary.classList.remove('active');
+    boundaryLabel.classList.remove('active');
+  }, 900);
+}
+
+async function typeCommand(prefix, cmd, container){
+  let out = `<span class="prompt">${prefix}</span><span class="cmd"></span><span class="cursor"></span>`;
+  container.innerHTML = out;
+  const cmdSpan = container.querySelector('.cmd');
+  const cursor = container.querySelector('.cursor');
+  for(let i=0;i<cmd.length;i++){
+    cmdSpan.textContent += cmd[i];
+    await sleep(22 + Math.random()*18);
+  }
+  await sleep(280);
+  cursor.remove();
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+async function runScript(){
+  if(running) return;
+  running = true;
+  termBody.innerHTML = '';
+  for(const line of script){
+    if(line.t === 'gap'){
+      addLine('&nbsp;');
+      await sleep(140);
+      continue;
+    }
+    if(line.t === 'prompt'){
+      const container = addLine('');
+      await typeCommand(line.text, line.cmd, container);
+      await sleep(200);
+      continue;
+    }
+    if(line.t === 'ok'){
+      addLine(`<span class="ok">${escapeHtml(line.text)}</span>`);
+      await sleep(420);
+      continue;
+    }
+    if(line.t === 'dim'){
+      addLine(`<span class="dim">${escapeHtml(line.text)}</span>`);
+      await sleep(360);
+      continue;
+    }
+    if(line.t === 'blocked'){
+      addLine(`<span class="blockedline">${escapeHtml(line.text)}</span>`);
+      flashBoundary();
+      await sleep(650);
+      continue;
+    }
+  }
+  await sleep(2400);
+  running = false;
+  runScript();
+}
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// respect reduced motion: run once, no loop-flash aggressively
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+runScript();
+
+// ---------- Snapshot timeline demo ----------
+const steps = [
+  {label:'Create', detail:'<b>neev sandbox create</b> — a fresh, isolated environment boots in seconds, with its own filesystem and process space.'},
+  {label:'Run task', detail:'The agent starts working: reading files, calling tools, writing output — all inside this one sandbox.'},
+  {label:'Snapshot', detail:'<b>neev sandbox snapshot</b> — the exact state is saved. Nothing about the running task changes.'},
+  {label:'Task breaks', detail:'Something goes wrong mid-task — a bad command, a bad response, a crash. It only affects this sandbox.'},
+  {label:'Restore', detail:'<b>neev sandbox restore</b> — back to the saved snapshot, instantly. No manual cleanup, no lost context.'},
+];
+
+let current = 0;
+const stepsEl = document.querySelectorAll('.tstep');
+const fillEl = document.getElementById('timelineFill');
+const detailEl = document.getElementById('timelineDetail');
+
+function renderTimeline(){
+  stepsEl.forEach((el, i)=>{
+    el.classList.remove('active','done');
+    if(i < current) el.classList.add('done');
+    if(i === current) el.classList.add('active');
+  });
+  fillEl.style.width = (current/(steps.length-1))*100 + '%';
+  detailEl.innerHTML = steps[current].detail;
+}
+renderTimeline();
+
+document.getElementById('tlNext').addEventListener('click', ()=>{
+  current = Math.min(current+1, steps.length-1);
+  renderTimeline();
+});
+document.getElementById('tlPrev').addEventListener('click', ()=>{
+  current = Math.max(current-1, 0);
+  renderTimeline();
+});
+
+let tlAuto = setInterval(()=>{
+  current = (current+1) % steps.length;
+  renderTimeline();
+}, 3400);
+
+['tlNext','tlPrev'].forEach(id=>{
+  document.getElementById(id).addEventListener('click', ()=>{
+    clearInterval(tlAuto);
+  });
+});
+
+// ---------- LIVE PLAYGROUND (client-side sandbox lifecycle simulation — DEMO ONLY) ----------
+(function(){
+  const body = document.getElementById('playBody');
+  const input = document.getElementById('playInput');
+  const runBtn = document.getElementById('playRun');
+  const counterEl = document.getElementById('playCounter');
+  const statusLabelEl = document.getElementById('playSessStatusLabel');
+
+  const LIMIT = 15;
+  let used = 0;
+  let busy = false;
+
+  // fake sandbox object — purely in-memory, resets on refresh, never talks to real infra
+  const sandbox = {
+    id: null,
+    status: 'none', // none | running | stopped | deleted
+    createdAt: null,
+    hasSnapshot: false
+  };
+
+  function newId(){
+    return 'sb_demo_' + Math.random().toString(16).slice(2,8);
+  }
+
+  function updateStatusLabel(){
+    if(sandbox.status === 'none') statusLabelEl.textContent = 'no sandbox';
+    else if(sandbox.status === 'running') statusLabelEl.textContent = sandbox.id + ' · running';
+    else if(sandbox.status === 'stopped') statusLabelEl.textContent = sandbox.id + ' · stopped';
+    else if(sandbox.status === 'deleted') statusLabelEl.textContent = 'no sandbox';
+  }
+
+  const dangerPatterns = [
+    /rm\s+-rf/i, /\bsudo\b/i, /\bssh\b/i, /\bscp\b/i,
+    /curl\s+\d+\.\d+\.\d+\.\d+/i, /wget\s+\d+\.\d+\.\d+\.\d+/i,
+    /\bnc\s+-e\b/i, /connect\s+\d+\.\d+\.\d+\.\d+/i,
+    /\bshutdown\b/i, /\breboot\b/i, /\bmkfs\b/i, /\bdd\s+if=/i
+  ];
+
+  function isDangerous(cmd){
+    return dangerPatterns.some(re => re.test(cmd));
+  }
+
+  function line(html, cls){
+    const div = document.createElement('div');
+    div.className = 'term-line' + (cls ? ' '+cls : '');
+    div.innerHTML = html;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+    return div;
+  }
+
+  function echo(cmd){
+    line(`<span class="prompt">$ </span><span class="cmd">${escapeHtmlP(cmd)}</span>`);
+  }
+
+  function escapeHtmlP(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function wait(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+  async function respond(cmd){
+    const c = cmd.trim();
+    const low = c.toLowerCase();
+
+    if(isDangerous(c)){
+      await wait(300);
+      line(`<span class="blockedline">⛔ blocked — outside sandbox boundary</span>`);
+      await wait(150);
+      line(`<span class="dim">→ this action would affect the host. denied.</span>`);
+      return;
+    }
+
+    if(low === 'help'){
+      await wait(200);
+      line(`<span class="dim">lifecycle: neev sandbox create / list / stop / resume / snapshot / delete</span>`);
+      line(`<span class="dim">other: ls, whoami, agent run &lt;file&gt;, clear</span>`);
+      return;
+    }
+
+    if(low === 'clear'){
+      body.innerHTML = '';
+      return;
+    }
+
+    if(low.startsWith('neev sandbox create')){
+      await wait(400);
+      if(sandbox.status === 'running'){
+        line(`<span class="dim">✓ ${sandbox.id} already running — use "neev sandbox delete" first to create a new one</span>`);
+        return;
+      }
+      sandbox.id = newId();
+      sandbox.status = 'running';
+      sandbox.createdAt = Date.now();
+      sandbox.hasSnapshot = false;
+      updateStatusLabel();
+      line(`<span class="ok">✓ ${sandbox.id} created — ubuntu-24.04, ready in 1.3s</span>`);
+      line(`<span class="dim">→ [demo] no real machine booted — this is a simulated response</span>`);
+      return;
+    }
+
+    if(low.startsWith('neev sandbox list')){
+      await wait(280);
+      if(sandbox.status === 'none' || sandbox.status === 'deleted'){
+        line(`<span class="dim">no sandboxes in this demo session</span>`);
+      } else {
+        const upSec = Math.max(1, Math.round((Date.now()-sandbox.createdAt)/1000));
+        line(`<span class="dim">${sandbox.id}   ${sandbox.status}   uptime ${upSec}s   snapshot: ${sandbox.hasSnapshot ? 'yes' : 'none'}</span>`);
+      }
+      return;
+    }
+
+    if(low.startsWith('neev sandbox stop')){
+      await wait(320);
+      if(sandbox.status !== 'running'){
+        line(`<span class="dim">nothing to stop — no sandbox is currently running</span>`);
+        return;
+      }
+      sandbox.status = 'stopped';
+      updateStatusLabel();
+      line(`<span class="ok">✓ ${sandbox.id} stopped — state preserved, no charges while stopped</span>`);
+      return;
+    }
+
+    if(low.startsWith('neev sandbox resume') || low.startsWith('neev sandbox start')){
+      await wait(340);
+      if(sandbox.status === 'running'){
+        line(`<span class="dim">${sandbox.id} is already running</span>`);
+        return;
+      }
+      if(sandbox.status !== 'stopped'){
+        line(`<span class="dim">no stopped sandbox to resume — try "neev sandbox create" first</span>`);
+        return;
+      }
+      sandbox.status = 'running';
+      updateStatusLabel();
+      line(`<span class="ok">✓ ${sandbox.id} resumed in 0.8s — exactly where you left off</span>`);
+      return;
+    }
+
+    if(low.startsWith('neev sandbox snapshot')){
+      await wait(300);
+      if(sandbox.status === 'none' || sandbox.status === 'deleted'){
+        line(`<span class="dim">no sandbox yet — try "neev sandbox create" first</span>`);
+        return;
+      }
+      sandbox.hasSnapshot = true;
+      line(`<span class="ok">✓ snapshot saved for ${sandbox.id}</span>`);
+      return;
+    }
+
+    if(low.startsWith('neev sandbox delete')){
+      await wait(300);
+      if(sandbox.status === 'none' || sandbox.status === 'deleted'){
+        line(`<span class="dim">nothing to delete — no active sandbox</span>`);
+        return;
+      }
+      line(`<span class="ok">✓ ${sandbox.id} deleted — all resources released</span>`);
+      sandbox.status = 'deleted';
+      sandbox.id = null;
+      sandbox.hasSnapshot = false;
+      updateStatusLabel();
+      return;
+    }
+
+    if(low === 'ls'){
+      await wait(250);
+      if(sandbox.status !== 'running'){
+        line(`<span class="dim">no running sandbox — try "neev sandbox create" first</span>`);
+      } else {
+        line(`<span class="dim">demo.py  README.md  data/  out/</span>`);
+      }
+      return;
+    }
+
+    if(low === 'whoami'){
+      await wait(180);
+      line(`<span class="dim">agent-runtime (uid=1000, isolated)</span>`);
+      return;
+    }
+
+    if(low.startsWith('agent run')){
+      await wait(300);
+      if(sandbox.status !== 'running'){
+        line(`<span class="dim">no running sandbox — try "neev sandbox create" first</span>`);
+        return;
+      }
+      line(`<span class="dim">→ running ${escapeHtmlP(c.replace(/^agent run\s*/i,'') || 'task')}…</span>`);
+      await wait(500);
+      line(`<span class="ok">✓ done in 1.8s — output written to /out/</span>`);
+      return;
+    }
+
+    // unknown command — still "runs", stays honest that it's simulated
+    await wait(250);
+    line(`<span class="dim">→ [demo] command accepted inside sandbox boundary (simulated)</span>`);
+    line(`<span class="ok">✓ exit 0</span>`);
+  }
+
+  async function submit(){
+    const cmd = input.value;
+    if(!cmd.trim() || busy) return;
+    if(used >= LIMIT){
+      line(`<span class="blockedline">⛔ session limit reached — sign up for unlimited sandboxes</span>`);
+      return;
+    }
+    busy = true;
+    runBtn.disabled = true;
+    used++;
+    counterEl.textContent = (LIMIT - used) > 0
+      ? `${LIMIT - used} commands left in this session`
+      : `session limit reached`;
+    if(LIMIT - used <= 3 && LIMIT - used > 0){
+      counterEl.className = 'play-limit';
+    }
+    echo(cmd);
+    input.value = '';
+    await respond(cmd);
+    busy = false;
+    runBtn.disabled = false;
+    input.focus();
+  }
+
+  runBtn.addEventListener('click', submit);
+  input.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') submit();
+  });
+  document.querySelectorAll('.play-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      input.value = chip.getAttribute('data-cmd');
+      submit();
+    });
+  });
+})();
+</script>
+</body>
+</html>
